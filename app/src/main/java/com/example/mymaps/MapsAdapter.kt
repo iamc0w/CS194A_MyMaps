@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mymaps.models.UserMap
 
 private const val TAG = "MapsAdapter"
-class MapsAdapter(val context: Context, val userMaps: List<UserMap>, val onClickListener: OnClickListener) : RecyclerView.Adapter<MapsAdapter.ViewHolder>() {
+class MapsAdapter(val context: Context, var userMaps: List<UserMap>, val onClickListener: OnClickListener) : RecyclerView.Adapter<MapsAdapter.ViewHolder>() {
     interface OnClickListener {
         fun onItemClick(position: Int)
     }
@@ -34,4 +34,8 @@ class MapsAdapter(val context: Context, val userMaps: List<UserMap>, val onClick
     }
 
     override fun getItemCount(): Int = userMaps.size
+    fun filterList(filteredList: MutableList<UserMap>) {
+        userMaps = filteredList
+        notifyDataSetChanged()
+    }
 }

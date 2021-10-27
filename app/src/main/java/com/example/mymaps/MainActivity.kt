@@ -6,6 +6,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -30,15 +32,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabCreateMap: FloatingActionButton
     private lateinit var userMaps: MutableList<UserMap>
     private lateinit var mapAdapter: MapsAdapter
+    private lateinit var etSearchText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //userMaps = generateSampleData().toMutableList()
+        //userMaps.addAll(deserializeUserMaps(this).toMutableList())
         userMaps = deserializeUserMaps(this).toMutableList()
 
         rvMaps = findViewById(R.id.rvMaps)
         fabCreateMap = findViewById(R.id.fabCreateMap)
+        etSearchText = findViewById(R.id.etSearchText)
 
         // set layout manager on the recycler view
         rvMaps.layoutManager = LinearLayoutManager(this)
@@ -59,6 +65,29 @@ class MainActivity : AppCompatActivity() {
             Log.i(TAG, "Tap on FAB")
             showAlertDialog()
         }
+
+        etSearchText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                Log.i(TAG, "afterTextChanged $s")
+                filterSearchText()
+            }
+
+        })
+    }
+
+    private fun filterSearchText() {
+        val text = etSearchText.text
+        val filteredList = mutableListOf<UserMap>()
+        for (userMap in userMaps) {
+            if (userMap.title.contains(text, true)) {
+                filteredList.add(userMap)
+            }
+        }
+        mapAdapter.filterList(filteredList)
     }
 
     private fun showAlertDialog() {
